@@ -9,9 +9,7 @@
 #import "GBIAPAnalyticsModule.h"
 
 #import "GBAnalytics.h"
-
-//foo what happens with my analytics when the dict element is a list? might have to coerce it into a string
-//both flurry and google?
+#import "GBToolbox.h"
 
 @implementation GBIAPAnalyticsModule
 
@@ -20,11 +18,11 @@
 }
 
 -(void)iapManagerDidRegisterValidationServers:(NSArray *)servers {
-    _td(@"GBIAP2: Registered validation servers", @{@"servers": servers});
+    _td(@"GBIAP2: Registered validation servers", @{@"servers": servers.shortStringRepresentation});
 }
 
 -(void)iapManagerUserDidRequestMetadataForProducts:(NSArray *)productIdentifiers {
-    _td(@"GBIAP2: Requested metadata", @{@"products": productIdentifiers});
+    _td(@"GBIAP2: Requested metadata", @{@"products": productIdentifiers.shortStringRepresentation});
 }
 
 -(void)iapManagerUserDidRequestPurchaseForProduct:(NSString *)productIdentifier {
@@ -36,7 +34,7 @@
 }
 
 -(void)iapManagerDidBeginMetadataFetchForProducts:(NSArray *)productIdentifiers {
-    _td(@"GBIAP2: Began metadata fetch", @{@"products": productIdentifiers});
+    _td(@"GBIAP2: Began metadata fetch", @{@"products": productIdentifiers.shortStringRepresentation});
 }
 
 -(void)iapManagerDidEndMetadataFetchForProducts:(NSArray *)productIdentifiers state:(GBIAP2MetadataFetchState)state {
@@ -55,7 +53,7 @@
         } break;
     }
     
-    _td(@"GBIAP2: Ended metadata fetch", @{@"products": productIdentifiers, @"state": stateString});
+    _td(@"GBIAP2: Ended metadata fetch", @{@"products": productIdentifiers.shortStringRepresentation, @"state": stateString});
 }
 
 -(void)iapManagerDidBeginPurchaseForProduct:(NSString *)productIdentifier {
