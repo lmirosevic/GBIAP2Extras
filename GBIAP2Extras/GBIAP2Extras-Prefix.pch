@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'GBIAP2Extras' target in the 'GBIAP2Extras' project
+//
+
+#ifdef __OBJC__
+    #import <Foundation/Foundation.h>
+#endif
