@@ -22,11 +22,11 @@
 }
 
 -(void)iapManagerUserDidRequestMetadataForProducts:(NSArray *)productIdentifiers {
-    _td(@"GBIAP2: Requested metadata", @{@"products": productIdentifiers.shortStringRepresentation});
+    _td(@"GBIAP2: Requested metadata", @{@"products": Stringify(productIdentifiers.shortStringRepresentation)});
 }
 
 -(void)iapManagerUserDidRequestPurchaseForProduct:(NSString *)productIdentifier {
-    _td(@"GBIAP2: Requested purchase", @{@"product": productIdentifier});
+    _td(@"GBIAP2: Requested purchase", @{@"product": Stringify(productIdentifier)});
 }
 
 -(void)iapManagerUserDidRequestRestore {
@@ -34,7 +34,7 @@
 }
 
 -(void)iapManagerDidBeginMetadataFetchForProducts:(NSArray *)productIdentifiers {
-    _td(@"GBIAP2: Began metadata fetch", @{@"products": productIdentifiers.shortStringRepresentation});
+    _td(@"GBIAP2: Began metadata fetch", @{@"products": Stringify(productIdentifiers.shortStringRepresentation)});
 }
 
 -(void)iapManagerDidEndMetadataFetchForProducts:(NSArray *)productIdentifiers state:(GBIAP2MetadataFetchState)state {
@@ -53,11 +53,11 @@
         } break;
     }
     
-    _td(@"GBIAP2: Ended metadata fetch", @{@"products": productIdentifiers.shortStringRepresentation, @"state": stateString});
+    _td(@"GBIAP2: Ended metadata fetch", @{@"products": Stringify(productIdentifiers.shortStringRepresentation), @"state": stateString});
 }
 
 -(void)iapManagerDidBeginPurchaseForProduct:(NSString *)productIdentifier {
-    _td(@"GBIAP2: Began purchase phase", @{@"product": productIdentifier});
+    _td(@"GBIAP2: Began purchase phase", @{@"product": Stringify(productIdentifier)});
 }
 
 -(void)iapManagerDidEndPurchaseForProduct:(NSString *)productIdentifier state:(GBIAP2PurchaseState)state solicited:(BOOL)solicited {
@@ -82,7 +82,7 @@
     
     NSString *solicitedString = solicited ? @"YES" : @"NO";
     
-    _td(@"GBIAP2: Ended purchase phase", @{@"product": productIdentifier, @"state": stateString, @"solicited": solicitedString});
+    _td(@"GBIAP2: Ended purchase phase", @{@"product": Stringify(productIdentifier), @"state": stateString, @"solicited": solicitedString});
 }
 
 -(void)iapManagerDidBeginRestore {
@@ -111,11 +111,11 @@
     
     NSString *solicitedString = solicited ? @"YES" : @"NO";
     
-    _td(@"GBIAP2: Ended restore phase for product", @{@"product": productIdentifier, @"state": stateString, @"solicited": solicitedString});
+    _td(@"GBIAP2: Ended restore phase for product", @{@"product": Stringify(productIdentifier), @"state": stateString, @"solicited": solicitedString});
 }
 
 -(void)iapManagerDidBeginVerificationForProduct:(NSString *)productIdentifier onServer:(NSString *)server {
-    _td(@"GBIAP2: Began verification phase", @{@"product": productIdentifier, @"server": server});
+    _td(@"GBIAP2: Began verification phase", @{@"product": Stringify(productIdentifier), @"server": server});
 }
 
 -(void)iapManagerDidEndVerificationForProduct:(NSString *)productIdentifier onServer:(NSString *)server state:(GBIAP2VerificationState)state {
@@ -134,7 +134,7 @@
         } break;
     }
     
-    _td(@"GBIAP2: Ended verification phase", @{@"product": productIdentifier, @"server": server, @"state": stateString});
+    _td(@"GBIAP2: Ended verification phase", @{@"product": Stringify(productIdentifier), @"server": server, @"state": stateString});
 }
 
 -(void)iapManagerDidSuccessfullyAcquireProduct:(NSString *)productIdentifier withTransactionType:(GBIAP2TransactionType)transactionType transactionState:(GBIAP2TransactionState)transactionState solicited:(BOOL)solicited {
@@ -178,17 +178,17 @@
     
     NSString *solicitedString = solicited ? @"YES" : @"NO";
     
-    _td(@"GBIAP2: Successfully acquired product", @{@"product": productIdentifier, @"transactionType": transactionTypeString, @"transactionState": transactionStateString, @"solicited": solicitedString});
+    _td(@"GBIAP2: Successfully acquired product", @{@"product": Stringify(productIdentifier), @"transactionType": transactionTypeString, @"transactionState": transactionStateString, @"solicited": solicitedString});
     
     //Break them down again because Flurry and Google Analytics ain't that great
     if (transactionType == GBIAP2TransactionTypePurchase) {
-        _td(@"GBIAP2: Actually purchased", @{@"product": productIdentifier, @"solicited": solicitedString});
+        _td(@"GBIAP2: Actually purchased", @{@"product": Stringify(productIdentifier), @"solicited": solicitedString});
     }
     else if (transactionType == GBIAP2TransactionTypeRePurchase) {
-        _td(@"GBIAP2: Actually repurchased", @{@"product": productIdentifier, @"solicited": solicitedString});
+        _td(@"GBIAP2: Actually repurchased", @{@"product": Stringify(productIdentifier), @"solicited": solicitedString});
     }
     else if (transactionType == GBIAP2TransactionTypeRestore) {
-        _td(@"GBIAP2: Actually restored", @{@"product": productIdentifier, @"solicited": solicitedString});
+        _td(@"GBIAP2: Actually restored", @{@"product": Stringify(productIdentifier), @"solicited": solicitedString});
     }
 }
 
@@ -233,7 +233,7 @@
     
     NSString *solicitedString = solicited ? @"YES" : @"NO";
     
-    _td(@"GBIAP2: Failed to acquired product", @{@"product": productIdentifier, @"transactionType": transactionTypeString, @"transactionState": transactionStateString, @"solicited": solicitedString});
+    _td(@"GBIAP2: Failed to acquired product", @{@"product": Stringify(productIdentifier), @"transactionType": transactionTypeString, @"transactionState": transactionStateString, @"solicited": solicitedString});
 }
 
 @end
