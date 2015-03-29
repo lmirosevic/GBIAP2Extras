@@ -8,8 +8,10 @@
 
 #import <Foundation/Foundation.h>
 
-#import "GBIAP2.h"
-#import "GBAnalytics.h"
+#import <GBIAP2/GBIAP2.h>
 
 @interface GBIAPAnalyticsModule : NSObject <GBIAP2AnalyticsModule>
+
+- (instancetype)init NS_DESIGNATED_INITIALIZER;
+
 @end

@@ -13,6 +13,7 @@ Pod::Spec.new do |s|
 
   s.dependency 'GBIAP2', '~> 2.0'
   s.dependency 'GBAnalytics', '~> 2.6'
+  s.dependency 'GBDeviceInfo', '~> 3.2'
 
   s.dependency 'GBToolbox'
 end

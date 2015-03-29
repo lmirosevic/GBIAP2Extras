@@ -8,36 +8,55 @@
 
 #import "GBIAPAnalyticsModule.h"
 
-#import "GBAnalytics.h"
-#import "GBToolbox.h"
+#import <GBAnalytics/GBAnalytics.h>
+#import <GBToolbox/GBToolbox.h>
+#import <GBDeviceInfo/GBDeviceInfo.h>
+
+@interface GBIAPAnalyticsModule ()
+
+@property (assign, nonatomic) BOOL isJailbroken;
+
+@end
 
 @implementation GBIAPAnalyticsModule
 
--(void)iapManagerDidResumeTransactions {
-    _t(@"GBIAP2: Resumed transactions");
+#pragma mark - API
+
+- (instancetype)init {
+    if (self = [super init]) {
+        self.isJailbroken = [GBDeviceInfo deviceInfo].isJailbroken;
+    }
+    
+    return self;
 }
 
--(void)iapManagerDidRegisterValidationServers:(NSArray *)servers {
-    _tp(@"GBIAP2: Registered validation servers", @{@"servers": servers.shortStringRepresentation});
+#pragma mark - GBIAP2AnalyticsModule
+
+- (void)iapManagerDidResumeTransactions {
+    [GBAnalytics trackEvent:@"GBIAP2: Resumed transactions" withParameters:@{@"jailbroken": _b(self.isJailbroken)}];
 }
 
--(void)iapManagerUserDidRequestMetadataForProducts:(NSArray *)productIdentifiers {
-    _tp(@"GBIAP2: Requested metadata", @{@"products": Stringify(productIdentifiers.shortStringRepresentation)});
+- (void)iapManagerDidRegisterValidationServers:(NSArray *)servers {
+    [GBAnalytics trackEvent:@"GBIAP2: Registered validation servers" withParameters:@{@"servers": servers.shortStringRepresentation, @"jailbroken": _b(self.isJailbroken)}];
 }
 
--(void)iapManagerUserDidRequestPurchaseForProduct:(NSString *)productIdentifier {
-    _tp(@"GBIAP2: Requested purchase", @{@"product": Stringify(productIdentifier)});
+- (void)iapManagerUserDidRequestMetadataForProducts:(NSArray *)productIdentifiers {
+    [GBAnalytics trackEvent:@"GBIAP2: Requested metadata" withParameters:@{@"products": Stringify(productIdentifiers.shortStringRepresentation), @"jailbroken": _b(self.isJailbroken)}];
 }
 
--(void)iapManagerUserDidRequestRestore {
-    _t(@"GBIAP2: Requested restore");
+- (void)iapManagerUserDidRequestPurchaseForProduct:(NSString *)productIdentifier {
+    [GBAnalytics trackEvent:@"GBIAP2: Requested purchase" withParameters:@{@"product": Stringify(productIdentifier), @"jailbroken": _b(self.isJailbroken)}];
 }
 
--(void)iapManagerDidBeginMetadataFetchForProducts:(NSArray *)productIdentifiers {
-    _tp(@"GBIAP2: Began metadata fetch", @{@"products": Stringify(productIdentifiers.shortStringRepresentation)});
+- (void)iapManagerUserDidRequestRestore {
+    [GBAnalytics trackEvent:@"GBIAP2: Requested restore" withParameters:@{@"jailbroken": _b(self.isJailbroken)}];
 }
 
--(void)iapManagerDidEndMetadataFetchForProducts:(NSArray *)productIdentifiers state:(GBIAP2MetadataFetchState)state {
+- (void)iapManagerDidBeginMetadataFetchForProducts:(NSArray *)productIdentifiers {
+    [GBAnalytics trackEvent:@"GBIAP2: Began metadata fetch" withParameters:@{@"products": Stringify(productIdentifiers.shortStringRepresentation), @"jailbroken": _b(self.isJailbroken)}];
+}
+
+- (void)iapManagerDidEndMetadataFetchForProducts:(NSArray *)productIdentifiers state:(GBIAP2MetadataFetchState)state {
     NSString *stateString;
     switch (state) {
         case GBIAP2MetadataFetchStateUnknown: {
@@ -53,14 +72,14 @@
         } break;
     }
     
-    _tp(@"GBIAP2: Ended metadata fetch", @{@"products": Stringify(productIdentifiers.shortStringRepresentation), @"state": stateString});
+    [GBAnalytics trackEvent:@"GBIAP2: Ended metadata fetch" withParameters:@{@"products": Stringify(productIdentifiers.shortStringRepresentation), @"state": stateString, @"jailbroken": _b(self.isJailbroken)}];
 }
 
--(void)iapManagerDidBeginPurchaseForProduct:(NSString *)productIdentifier {
-    _tp(@"GBIAP2: Began purchase phase", @{@"product": Stringify(productIdentifier)});
+- (void)iapManagerDidBeginPurchaseForProduct:(NSString *)productIdentifier {
+    [GBAnalytics trackEvent:@"GBIAP2: Began purchase phase" withParameters:@{@"product": Stringify(productIdentifier), @"jailbroken": _b(self.isJailbroken)}];
 }
 
--(void)iapManagerDidEndPurchaseForProduct:(NSString *)productIdentifier state:(GBIAP2PurchaseState)state solicited:(BOOL)solicited {
+- (void)iapManagerDidEndPurchaseForProduct:(NSString *)productIdentifier state:(GBIAP2PurchaseState)state solicited:(BOOL)solicited {
     NSString *stateString;
     switch (state) {
         case GBIAP2PurchaseStateUnknown: {
@@ -80,16 +99,14 @@
         } break;
     }
     
-    NSString *solicitedString = solicited ? @"YES" : @"NO";
-    
-    _tp(@"GBIAP2: Ended purchase phase", @{@"product": Stringify(productIdentifier), @"state": stateString, @"solicited": solicitedString});
+    [GBAnalytics trackEvent:@"GBIAP2: Ended purchase phase" withParameters:@{@"product": Stringify(productIdentifier), @"state": stateString, @"solicited": _b(solicited), @"jailbroken": _b(self.isJailbroken)}];
 }
 
--(void)iapManagerDidBeginRestore {
-    _t(@"GBIAP2: Began restore");
+- (void)iapManagerDidBeginRestore {
+    [GBAnalytics trackEvent:@"GBIAP2: Began restore" withParameters:@{@"jailbroken": _b(self.isJailbroken)}];
 }
 
--(void)iapManagerDidEndRestoreForProduct:(NSString *)productIdentifier state:(GBIAP2PurchaseState)state solicited:(BOOL)solicited {
+- (void)iapManagerDidEndRestoreForProduct:(NSString *)productIdentifier state:(GBIAP2PurchaseState)state solicited:(BOOL)solicited {
     NSString *stateString;
     switch (state) {
         case GBIAP2PurchaseStateUnknown: {
@@ -109,16 +126,14 @@
         } break;
     }
     
-    NSString *solicitedString = solicited ? @"YES" : @"NO";
-    
-    _tp(@"GBIAP2: Ended restore phase for product", @{@"product": Stringify(productIdentifier), @"state": stateString, @"solicited": solicitedString});
+    [GBAnalytics trackEvent:@"GBIAP2: Ended restore phase for product" withParameters:@{@"product": Stringify(productIdentifier), @"state": stateString, @"solicited": _b(solicited), @"jailbroken": _b(self.isJailbroken)}];
 }
 
--(void)iapManagerDidBeginVerificationForProduct:(NSString *)productIdentifier onServer:(NSString *)server {
-    _tp(@"GBIAP2: Began verification phase", @{@"product": Stringify(productIdentifier), @"server": server});
+- (void)iapManagerDidBeginVerificationForProduct:(NSString *)productIdentifier onServer:(NSString *)server {
+    [GBAnalytics trackEvent:@"GBIAP2: Began verification phase" withParameters:@{@"product": Stringify(productIdentifier), @"server": server, @"jailbroken": _b(self.isJailbroken)}];
 }
 
--(void)iapManagerDidEndVerificationForProduct:(NSString *)productIdentifier onServer:(NSString *)server state:(GBIAP2VerificationState)state {
+- (void)iapManagerDidEndVerificationForProduct:(NSString *)productIdentifier onServer:(NSString *)server state:(GBIAP2VerificationState)state {
     NSString *stateString;
     switch (state) {
         case GBIAP2VerificationStateUnknown: {
@@ -134,10 +149,10 @@
         } break;
     }
     
-    _tp(@"GBIAP2: Ended verification phase", @{@"product": Stringify(productIdentifier), @"server": server, @"state": stateString});
+    [GBAnalytics trackEvent:@"GBIAP2: Ended verification phase" withParameters:@{@"product": Stringify(productIdentifier), @"server": server, @"state": stateString, @"jailbroken": _b(self.isJailbroken)}];
 }
 
--(void)iapManagerDidSuccessfullyAcquireProduct:(NSString *)productIdentifier withTransactionType:(GBIAP2TransactionType)transactionType transactionState:(GBIAP2TransactionState)transactionState solicited:(BOOL)solicited {
+- (void)iapManagerDidSuccessfullyAcquireProduct:(NSString *)productIdentifier withTransactionType:(GBIAP2TransactionType)transactionType transactionState:(GBIAP2TransactionState)transactionState solicited:(BOOL)solicited {
     NSString *transactionTypeString;
     switch (transactionType) {
         case GBIAP2TransactionTypeUnknown: {
@@ -176,23 +191,21 @@
         } break;
     }
     
-    NSString *solicitedString = solicited ? @"YES" : @"NO";
-    
-    _tp(@"GBIAP2: Successfully acquired product", @{@"product": Stringify(productIdentifier), @"transactionType": transactionTypeString, @"transactionState": transactionStateString, @"solicited": solicitedString});
+    [GBAnalytics trackEvent:@"GBIAP2: Successfully acquired product" withParameters:@{@"product": Stringify(productIdentifier), @"transactionType": transactionTypeString, @"transactionState": transactionStateString, @"solicited": _b(solicited), @"jailbroken": _b(self.isJailbroken)}];
     
     //Break them down again because Flurry and Google Analytics ain't that great
     if (transactionType == GBIAP2TransactionTypePurchase) {
-        _tp(@"GBIAP2: Actually purchased", @{@"product": Stringify(productIdentifier), @"solicited": solicitedString});
+        [GBAnalytics trackEvent:@"GBIAP2: Actually purchased" withParameters:@{@"product": Stringify(productIdentifier), @"solicited": _b(solicited), @"jailbroken": _b(self.isJailbroken)}];
     }
     else if (transactionType == GBIAP2TransactionTypeRePurchase) {
-        _tp(@"GBIAP2: Actually repurchased", @{@"product": Stringify(productIdentifier), @"solicited": solicitedString});
+        [GBAnalytics trackEvent:@"GBIAP2: Actually repurchased" withParameters:@{@"product": Stringify(productIdentifier), @"solicited": _b(solicited), @"jailbroken": _b(self.isJailbroken)}];
     }
     else if (transactionType == GBIAP2TransactionTypeRestore) {
-        _tp(@"GBIAP2: Actually restored", @{@"product": Stringify(productIdentifier), @"solicited": solicitedString});
+        [GBAnalytics trackEvent:@"GBIAP2: Actually restored" withParameters:@{@"product": Stringify(productIdentifier), @"solicited": _b(solicited), @"jailbroken": _b(self.isJailbroken)}];
     }
 }
 
--(void)iapManagerDidFailToAcquireProduct:(NSString *)productIdentifier withTransactionType:(GBIAP2TransactionType)transactionType transactionState:(GBIAP2TransactionState)transactionState solicited:(BOOL)solicited {
+- (void)iapManagerDidFailToAcquireProduct:(NSString *)productIdentifier withTransactionType:(GBIAP2TransactionType)transactionType transactionState:(GBIAP2TransactionState)transactionState solicited:(BOOL)solicited {
     NSString *transactionTypeString;
     switch (transactionType) {
         case GBIAP2TransactionTypeUnknown: {
@@ -231,9 +244,7 @@
         } break;
     }
     
-    NSString *solicitedString = solicited ? @"YES" : @"NO";
-    
-    _tp(@"GBIAP2: Failed to acquired product", @{@"product": Stringify(productIdentifier), @"transactionType": transactionTypeString, @"transactionState": transactionStateString, @"solicited": solicitedString});
+    [GBAnalytics trackEvent:@"GBIAP2: Failed to acquired product" withParameters:@{@"product": Stringify(productIdentifier), @"transactionType": transactionTypeString, @"transactionState": transactionStateString, @"solicited": _b(solicited), @"jailbroken": _b(self.isJailbroken)}];
 }
 
 @end
