@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name                  = 'GBIAP2Extras'
-  s.version               = '1.0.0'
+  s.version               = '1.1.0'
   s.summary               = 'Extensions to GBIAP2'
   s.homepage              = 'https://github.com/lmirosevic/GBIAP2Extras'
   s.license               = { type: 'Apache License, Version 2.0', file: 'LICENSE' }
