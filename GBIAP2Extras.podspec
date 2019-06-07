@@ -11,9 +11,9 @@ Pod::Spec.new do |s|
   s.source_files          = 'GBIAP2Extras/GBIAPExtras.h', 'GBIAP2Extras/GBIAPAnalyticsModule.{h,m}'
   s.public_header_files   = 'GBIAP2Extras/GBIAPExtras.h', 'GBIAP2Extras/GBIAPAnalyticsModule.h'
 
-  s.dependency 'GBIAP2', '~> 2.0'
-  s.dependency 'GBAnalytics', '~> 2.6'
-  s.dependency 'GBDeviceInfo', '~> 3.2'
+  s.dependency 'GBIAP2', '~> 3.0'
+  s.dependency 'GBAnalytics', '~> 4.0'
+  s.dependency 'GBDeviceInfo', '~> 6.0'
 
   s.dependency 'GBToolbox'
 end
